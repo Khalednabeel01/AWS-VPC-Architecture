@@ -205,99 +205,87 @@ The User Data script automatically configures instances during launch.
 - Pull website files from S3
 - Start and enable services
 - Deploy static website files automatically
+  
 
-### **Example:**
+### Infrastructure Automation (User Data Script)
+When instances are launched by the Auto Scaling Group, they are automatically bootstrapped using the following Bash script:
 
 ```bash
 #!/bin/bash
-
+# Update system packages
 yum update -y
+
+# Install Apache Web Server and AWS CLI
 yum install -y httpd aws-cli
 
+# Start and enable Apache service
 systemctl start httpd
 systemctl enable httpd
 
+# Deploy static web assets from S3 securely
 cd /var/www/html
+aws s3 cp s3://app-config-s3-bucket-khaled/AWS-VPC-Architecture/html-web-app/ /var/www/html/ --recursive
 
-sudo aws s3 cp s3://app-config-s3-bucket-khaled/AWS-VPC-Architecture/html-web-app/ /var/www/html/ --recursive
-
+# Restart Apache to apply changes
 systemctl restart httpd
 
-## **Auto Scaling Group (ASG)**
 
-The Auto Scaling Group was configured to ensure high availability and scalability.
+## ⚙️ Core Components & Configuration
 
-Setting	Value
-Minimum Capacity	2
-Desired Capacity	2
-Maximum Capacity	4
-Features
-Multi-AZ Deployment
-Automatic Instance Replacement
-High Availability
-Fault Tolerance
-Elastic Scaling
-Load Balancer
-Aplication Load Balancer (ALB)
+### 🚀 Auto Scaling Group (ASG)
+The ASG is configured to handle dynamic traffic loads and ensure the application remains self-healing.
 
-A public-facing Network Load Balancer was deployed across public subnets.
+| Setting | Value |
+| :--- | :--- |
+| **Minimum Capacity** | 2 |
+| **Desired Capacity** | 2 |
+| **Maximum Capacity** | 4 |
 
-# **Responsibilities include:**
+**Key Features Deployed:**
+* **Multi-AZ Deployment:** Instances are distributed across separate Availability Zones for blast-radius isolation.
+* **Automatic Instance Replacement:** Failed or unhealthy instances are automatically terminated and replaced.
+* **Elastic Scaling:** Scales capacity up or down based on demand.
 
-Traffic Distribution
-High Availability
-Health Checks
-Public Access to Application
-Amazon S3 Integration
+### 🔀 Load Balancing (ALB)
+A public-facing **Application Load Balancer (ALB)** is deployed across public subnets to manage incoming traffic.
+* **Traffic Distribution:** Evenly distributes user requests to healthy backend instances.
+* **Health Checks:** Continuously monitors instance health and stops routing traffic to unhealthy ones.
+* **Target Group Automation:** ASG instances automatically register/deregister themselves within the Target Group.
 
-# **An S3 bucket was used to store:**
+### 📦 Storage & Content Delivery
+* **Amazon S3 Integration:** Used as a secure, centralized repository to store static website files, HTML/CSS/JS assets, and configuration files.
+* **Automated Pulls:** Instances leverage IAM roles to securely fetch deployment files at launch time without hardcoded credentials.
 
-Static Website Files
-HTML/CSS/JS Assets
-Application Deployment Files
-Configuration Files
+---
 
-Website files were automatically pulled to EC2 instances using User Data scripts.
+## 🛡️ Security & Operations Validation
 
+The following validation steps were successfully completed during testing:
 
-The following validation steps were successfully completed:
+* **[✓] Secure Bastion Host Access:** Successfully established secure SSH tunnels to private EC2 instances via a dedicated Bastion Host in the public subnet.
+* **[✓] AWS Systems Manager (SSM):** Validated secure, passwordless terminal access to instances using **SSM Session Manager**, eliminating the need to open inbound SSH ports (Port 22).
+* **[✓] Web App Public Validation:** Confirmed the web application is publicly accessible and responsive via the **Load Balancer DNS endpoint**.
+* **[✓] Golden AMI & Launch Template:** Verified that new instances spin up seamlessly with pre-configured requirements.
 
-Bastion Host Access
-Successfully connected to private EC2 instances through Bastion Host using SSH.
-Session Manager Validation
-Successfully connected to EC2 instances using AWS Systems Manager Session Manager.
-Website Validation
-Successfully accessed the web application publicly using:
-Load Balancer ALB
-Auto Scaling Validation
-Auto Scaling instances launched successfully using the Golden AMI and Launch Template.
-Instances automatically registered with the Target Group.
-Key Learning Outcomes
+---
 
-This project strengthened practical experience in:
+## 💡 Challenges Solved During Implementation
 
-AWS Networking
-Cloud Security
-Infrastructure Automation
-Auto Scaling
-High Availability Design
-Load Balancing
-IAM & Least Privilege Access
-Route53 DNS Management
-Cloud Monitoring
-Secure Bastion Architecture
-AWS Systems Manager
-DevOps Infrastructure Design
-Challenges Solved During Implementation
-Configuring private subnet internet access using NAT Gateway
-Fixing SSM Agent IAM permission issues
-Configuring Auto Scaling instances with IAM Roles
-Deploying static website files from S3 automatically
-Configuring public Load Balancer subnets correctly
-Registering instances automatically inside Target Groups
-Multi-VPC communication using Transit Gateway
-Project Repository
+* **Private Subnet Internet Access:** Configured **NAT Gateways** properly within public subnets to allow private instances to download updates and pull S3 assets.
+* **IAM Least Privilege Access:** Debugged and resolved SSM Agent permission issues and S3 bucket policies by attaching proper IAM Roles to the EC2 Instance Profiles.
+* **Multi-VPC Routing:** Designed and implemented cross-VPC communication efficiently using **AWS Transit Gateway**.
 
-# **GitHub Repository:**
+---
 
-https://github.com/Khalednabeel01/AWS-VPC-Architecture
+## 🧠 Key Learning Outcomes
+
+Through this hands-on project, I have deepened my expertise in:
+* **Advanced AWS Networking:** VPC, Public/Private Subnets, NAT Gateways, Transit Gateway.
+* **High Availability Design:** Auto Scaling Groups, Application Load Balancers, Multi-AZ structures.
+* **Cloud Security & Identity:** IAM Roles, Secure Bastion Architecture, AWS Systems Manager.
+* **DevOps Infrastructure Design:** Bootstrapping automation and decoupling state/storage using S3.
+
+---
+
+## 🔗 Project Repository
+* **GitHub Repository:** [Khalednabeel01/AWS-VPC-Architecture](https://github.com/Khalednabeel01/AWS-VPC-Architecture)
