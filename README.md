@@ -210,8 +210,11 @@ The User Data script automatically configures instances during launch.
 ### Infrastructure Automation (User Data Script)
 When instances are launched by the Auto Scaling Group, they are automatically bootstrapped using the following Bash script:
 
-```bash
-#!/bin/bash
+## 📜 Infrastructure Automation (User Data Script)
+
+When EC2 instances are launched dynamically by the Auto Scaling Group, they automatically fetch the deployment package and bootstrap the web server environment using the following initialization script:
+
+<pre><code>#!/bin/bash
 # Update system packages
 yum update -y
 
@@ -227,8 +230,9 @@ cd /var/www/html
 aws s3 cp s3://app-config-s3-bucket-khaled/AWS-VPC-Architecture/html-web-app/ /var/www/html/ --recursive
 
 # Restart Apache to apply changes
-systemctl restart httpd
+systemctl restart httpd</code></pre>
 
+---
 
 ## ⚙️ Core Components & Configuration
 
@@ -274,16 +278,6 @@ The following validation steps were successfully completed during testing:
 * **Private Subnet Internet Access:** Configured **NAT Gateways** properly within public subnets to allow private instances to download updates and pull S3 assets.
 * **IAM Least Privilege Access:** Debugged and resolved SSM Agent permission issues and S3 bucket policies by attaching proper IAM Roles to the EC2 Instance Profiles.
 * **Multi-VPC Routing:** Designed and implemented cross-VPC communication efficiently using **AWS Transit Gateway**.
-
----
-
-## 🧠 Key Learning Outcomes
-
-Through this hands-on project, I have deepened my expertise in:
-* **Advanced AWS Networking:** VPC, Public/Private Subnets, NAT Gateways, Transit Gateway.
-* **High Availability Design:** Auto Scaling Groups, Application Load Balancers, Multi-AZ structures.
-* **Cloud Security & Identity:** IAM Roles, Secure Bastion Architecture, AWS Systems Manager.
-* **DevOps Infrastructure Design:** Bootstrapping automation and decoupling state/storage using S3.
 
 ---
 
