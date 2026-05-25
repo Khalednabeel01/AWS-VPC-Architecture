@@ -21,7 +21,9 @@ The architecture follows enterprise-level cloud best practices and was implement
 # Architecture Design
 
 ## Infrastructure Architecture
-<img width="1666" height="944" alt="VPC-Architecture" src="https://github.com/user-attachments/assets/13f8ceff-a7c6-491f-8527-c42be67dbcd8" />
+<img width="1672" height="941" alt="VPC-Architecture" src="https://github.com/user-attachments/assets/8b6f1398-d941-4f3b-b7a0-a1f232dbcb9f" />
+
+
 <img width="1364" height="689" alt="website" src="https://github.com/user-attachments/assets/e07f82da-2544-40de-8116-a392a3d5216e" />
 
 ---
